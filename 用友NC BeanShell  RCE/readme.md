@@ -1,4 +1,5 @@
-0x00 漏洞检测1
+0x00 漏洞检测
+FOFA搜索关键字：
 
 URL+/servlet/~ic/bsh.servlet.BshServlet
 
