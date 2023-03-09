@@ -1,4 +1,4 @@
-0x00 发送第一个请求包
+0x00 发送第一个请求包1
 
 ```
 GET /general/login_code.php HTTP/1.1
