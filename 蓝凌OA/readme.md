@@ -2,6 +2,8 @@
 
    访问/sys/ui/extend/varkind/custom.jsp
  
+  1.被防火墙拦截  2.被上层网络防火墙拦截   3.没有网关
+ 
  POST /sys/ui/extend/varkind/custom.jsp HTTP/1.1 
 Host: host:8080 
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0 Accept: */* Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2 
