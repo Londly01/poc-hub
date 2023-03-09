@@ -1,4 +1,4 @@
-0x00 漏洞检测
+0x00 漏洞检测1
 
 URL+/servlet/~ic/bsh.servlet.BshServlet
 
