@@ -28,4 +28,4 @@
 ```
 ## 0x00 漏洞利用
   
-  使用ysoserial.jar 工具搭建服务
+  使用ysoserial.jar 工具搭建服务。。。。。。。。。。。
