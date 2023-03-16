@@ -33,5 +33,5 @@ Content-Type: image/png
 --59229605f98b8cf290a7b8908b34616b--
    ```
    
-访问 http://xxxxxxxxxxxx//londly.jsp   
+访问 http://xxxxxxxxxxxx/londly.jsp   
    
