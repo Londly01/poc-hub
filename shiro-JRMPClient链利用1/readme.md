@@ -1,6 +1,6 @@
 ## 0x00 漏洞背景
 
-  在打一个项目中，shiro反序列化有个链容易忽略，找到key没有链，可以尝试JRMPClient，下面是shiro_tool.jar测试结果，关键部分不放了。
+  在打一个项目中，shiro反序列化有个链容易忽略，找到key没有链，使用JRMPClient成功反弹，下面是shiro_tool.jar测试结果，关键部分不放了。
  ``` 
 [-] target is use shiro
 [-] start guess shiro key...
