@@ -35,5 +35,7 @@ Content-Type: image/png
    
 访问 http://xxxxxxxxxxxx/londly.jsp  
 
-0x02 批量脚本给自己留哥作业，有时间再写
+## 0x02 批量脚本
+
+  有时间在干
    
