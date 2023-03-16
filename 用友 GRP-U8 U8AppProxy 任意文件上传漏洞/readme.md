@@ -35,7 +35,7 @@ Content-Type: image/png
    
 访问 http://xxxxxxxxxxxx/londly.jsp  
 
-## 0x02 批量脚本
-
-  有时间在干
+## 0x02 python利用脚本
+        自己写的利用脚本在附件
+  
    
