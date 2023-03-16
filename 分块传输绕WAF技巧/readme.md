@@ -1,6 +1,6 @@
 ## 参考二篇文章
 
-有个项目有WAF，最终用分块才进行绕过，参考如下
+年初有个项目有WAF，最终SQL注入用分块才进行绕过，参考如下
 
 1.https://gv7.me/articles/2021/java-deserialized-data-bypasses-waf-through-sleep-chunked/
 
