@@ -30,3 +30,6 @@
           现在数据传输很多都是 json 形式，所以在 json 中我们也可以进行尝试，像 Jackson 和 fastjson 又有 unicode 和 hex 的编码特性，所以就可以尝试编码绕过
      {"key":"\u0024\u007b"}
      {"key":"\x24\u007b"}
+     
+ ## 参考
+    https://blog.csdn.net/qq_40640917/article/details/128613592
