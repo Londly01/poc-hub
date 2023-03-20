@@ -27,6 +27,8 @@
 ## 0x05 方法5
 
     我们也可以在请求数据包中添加脏数据，可以在<wsa:RelatesTo>标签中间添加脏数据，由于是POST请求数据包，这里面可以添加很长很长的脏数据， 图片来自ABC123师傅
+    
+    
     ![图片](https://user-images.githubusercontent.com/118274389/226230146-838bba91-d8ed-49b4-be43-ced7d0a69bc8.png)
 
 ## 0x06 方法6
