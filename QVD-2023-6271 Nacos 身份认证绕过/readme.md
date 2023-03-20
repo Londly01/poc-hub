@@ -5,5 +5,9 @@
 ## 0x01 漏洞复现
 
        fofa  app="NACOS"
-s
+
+## 0x02 参考过程
+      打内网时候会用到相应信息
+
+      https://mp.weixin.qq.com/s/uTTci9aiSBvDKsTw5cBYcA?vid=1688850852251023&deviceid=b4f8f430-2e5f-4ac2-835d-00290f7cfb9e&version=4.1.0.6011&platform=win
   
