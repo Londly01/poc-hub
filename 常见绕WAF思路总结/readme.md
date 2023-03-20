@@ -22,7 +22,9 @@
 ## 0x04 方法4
 
     为了进一步绕过waf，我们还可以对URL路径进行URL编码混淆掺杂，这里不要将整个url路径全部用URL编码，一小段一小段地进行URL编码绕waf效果更好。
-    
+   
+ ![图片](https://user-images.githubusercontent.com/118274389/226230399-4b019d4e-f836-465b-8146-8101c5b5341f.png)
+
     
 ## 0x05 方法5
 
