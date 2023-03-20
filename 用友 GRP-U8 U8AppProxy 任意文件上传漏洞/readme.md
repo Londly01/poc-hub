@@ -36,6 +36,7 @@ Content-Type: image/png
 访问 http://xxxxxxxxxxxx/londly.jsp  
 
 ## 0x02 python利用脚本
-        自己写的利用脚本在附件
+        
+        https://github.com/Londly01/yongyou-nc-exp
   
    
