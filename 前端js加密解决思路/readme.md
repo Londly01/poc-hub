@@ -4,7 +4,6 @@
         
         明文：123456
 
-        前端进行加    
-        325aa8b6672fca57edcf9638539315299aa59791ff794777cddc6fcbc28cfd11d51652530b35fd107be11795b19ffebf095155e8f524774039053adb6ec3eeb9781eb24e10629645fa9a040f0cbc86ce7573528bb8b364ccaea4d58ec519f8a79888e689e84e948b7ffd8e213552e1bcefbe5187ffdede885f98549bb54e2b81
+## 0x01 利用方法
 
-        后端解密为：123456
+       参考这位师傅手法 https://forum.butian.net/share/1183
