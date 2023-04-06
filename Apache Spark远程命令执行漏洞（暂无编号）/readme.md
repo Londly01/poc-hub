@@ -53,5 +53,11 @@ Content-Length: 683
 }
 
 ```
-       
-        
+成功回显
+
+![图片](https://user-images.githubusercontent.com/118274389/230283083-b62e594c-d97c-4661-b524-63d4d627945a.png)
+
+
+响应中包含driverId的值，用响应中driverId的值替换下面driverId的值，访问如下地址
+
+http://IP:8081/logPage/?driverId=driver-20211014035556-0013&logType=stdout
