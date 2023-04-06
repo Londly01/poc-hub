@@ -4,6 +4,10 @@
         
         FOFA语句 app="360天擎终端安全管理系统"
         
+        
+ ![图片](https://user-images.githubusercontent.com/118274389/230260256-7fe8e827-2864-44f2-b50b-b5d5f20231df.png)
+
+        
 ## 0x01 漏洞利用
 
         /api/dp/rptsvcsyncpoint?ccid=1
