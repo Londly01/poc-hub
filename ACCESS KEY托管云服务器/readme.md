@@ -3,9 +3,12 @@
         之前渗透碰见一次小程序泄露ACCESS KEY，所以想把相关知识总结一遍。
 ## 0x01 泄露途径
 
-        1.小程序反编译后一般有个config.js里会泄露ACCESS KEY、
+        1.小程序反编译后一般有个config.js里会泄露ACCESS KEY
         
-        ![图片](https://user-images.githubusercontent.com/118274389/230257186-868495b8-0c29-4b00-812d-6663ac573311.png)
+        
+   
+   ![图片](https://user-images.githubusercontent.com/118274389/230257864-04b739f0-1a64-403b-9416-961799278efa.png)
+
 
         2.有些网站的JS文件也会泄露相关的key
         
