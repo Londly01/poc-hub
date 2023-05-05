@@ -64,12 +64,13 @@
       也可以直接通过-debug参数，在终端中看到请求和响应包的详细信息
       
       
-      ![image](https://user-images.githubusercontent.com/118274389/236361498-acf6bfb6-a586-4140-9245-2dae0b12c166.png)
+  ![image](https://user-images.githubusercontent.com/118274389/236361689-dbddc3a0-72cb-4424-9afe-382aced083f1.png)
+
 
 
 
        
        
  
- ## 0x02 参考
+ ## 0x03 参考
     https://blog.csdn.net/qq_40640917/article/details/128613592
