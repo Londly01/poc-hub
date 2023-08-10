@@ -17,7 +17,7 @@
 
    1.多个WPS Office 2023 个人版<11.1.0.15120 都未复现，poc目前无法证实文档里藏的图片
 
-   2.也有人说这是个老洞，吾爱破解去年有讨论过：https://www.52pojie.cn/thread-1670740-1-1.html
+   2.这个可能是老洞，参考：https://www.52pojie.cn/thread-1670740-1-1.html
    
 
 
